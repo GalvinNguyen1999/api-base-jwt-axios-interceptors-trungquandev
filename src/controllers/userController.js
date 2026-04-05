@@ -1,7 +1,7 @@
 // Author: TrungQuanDev: https://youtube.com/@trungquandev
-import { StatusCodes } from "http-status-codes";
-import ms from "ms";
-import { JwtProvider } from "~/providers/JwtProvider";
+import { StatusCodes } from 'http-status-codes'
+import ms from 'ms'
+import { JwtProvider } from '~/providers/JwtProvider'
 
 /**
  * Mock nhanh thông tin user thay vì phải tạo Database rồi query.
@@ -10,11 +10,11 @@ import { JwtProvider } from "~/providers/JwtProvider";
  */
 const MOCK_DATABASE = {
   USER: {
-    ID: "trungquandev-sample-id-12345678",
-    EMAIL: "trungquandev.official@gmail.com",
-    PASSWORD: "trungquandev@123",
-  },
-};
+    ID: 'trungquandev-sample-id-12345678',
+    EMAIL: 'trungquandev.official@gmail.com',
+    PASSWORD: 'trungquandev@123'
+  }
+}
 
 /**
  * 2 cái chữ ký bí mật quan trọng trong dự án. Dành cho JWT - Jsonwebtokens
@@ -22,8 +22,8 @@ const MOCK_DATABASE = {
  * Ở đây mình làm Demo thôi nên mới đặt biến const và giá trị random ngẫu nhiên trong code nhé.
  * Xem thêm về biến môi trường: https://youtu.be/Vgr3MWb7aOw
  */
-const ACCESS_TOKEN_SECRET_SIGNATURE = "EbGgpdAIRosZ49Q7MewhxslUr4vCy8ju";
-const REFRESH_TOKEN_SECRET_SIGNATURE = "Ceq4yW2gvAjcJrI7aQpPIW0p2gDBuGV6";
+const ACCESS_TOKEN_SECRET_SIGNATURE = 'EbGgpdAIRosZ49Q7MewhxslUr4vCy8ju'
+const REFRESH_TOKEN_SECRET_SIGNATURE = 'Ceq4yW2gvAjcJrI7aQpPIW0p2gDBuGV6'
 
 const login = async (req, res) => {
   try {
@@ -33,77 +33,77 @@ const login = async (req, res) => {
     ) {
       res
         .status(StatusCodes.FORBIDDEN)
-        .json({ message: "Your email or password is incorrect!" });
-      return;
+        .json({ message: 'Your email or password is incorrect!' })
+      return
     }
 
     // Trường hợp nhập đúng thông tin tài khoản, tạo token và trả về cho phía Client
     // step 1: mock data user
     const userInfo = {
       id: MOCK_DATABASE.USER.ID,
-      email: MOCK_DATABASE.USER.EMAIL,
-    };
+      email: MOCK_DATABASE.USER.EMAIL
+    }
 
     // step 2: generate access token (lưu ý: thời gian sống của access token phải nhỏ hơn refresh token vì khi access token hết hạn thì client sẽ request refresh token để lấy access token mới)
     const accessToken = await JwtProvider.generateToken(
       userInfo,
       ACCESS_TOKEN_SECRET_SIGNATURE,
-      "1h",
-    );
+      '1h'
+    )
 
     // step 3: generate refresh token (lưu ý: thời gian sống của refresh token phải lớn hơn access token để client có thể request refresh token khi access token hết hạn)
     const refreshToken = await JwtProvider.generateToken(
       userInfo,
       REFRESH_TOKEN_SECRET_SIGNATURE,
-      "14 days",
-    );
+      '14 days'
+    )
 
     // step 4: Lưu access token và refresh token vào cookie của client thông qua httpOnly cookie
-    res.cookie("accessToken", accessToken, {
+    res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
-      maxAge: ms("14 days"), // bởi vì refresh token có thời gian sống là 14 ngày nên maxAge của cookie cũng phải là 14 ngày. nếu maxAge của cookie nhỏ hơn thời gian sống của refresh token thì cookie sẽ bị xóa trước khi refresh token hết hạn
-    });
+      sameSite: 'none',
+      maxAge: ms('14 days') // bởi vì refresh token có thời gian sống là 14 ngày nên maxAge của cookie cũng phải là 14 ngày. nếu maxAge của cookie nhỏ hơn thời gian sống của refresh token thì cookie sẽ bị xóa trước khi refresh token hết hạn
+    })
 
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
-      maxAge: ms("14 days"), // bởi vì refresh token có thời gian sống là 14 ngày nên maxAge của cookie cũng phải là 14 ngày. nếu maxAge của cookie nhỏ hơn thời gian sống của refresh token thì cookie sẽ bị xóa trước khi refresh token hết hạn
-    });
+      sameSite: 'none',
+      maxAge: ms('14 days') // bởi vì refresh token có thời gian sống là 14 ngày nên maxAge của cookie cũng phải là 14 ngày. nếu maxAge của cookie nhỏ hơn thời gian sống của refresh token thì cookie sẽ bị xóa trước khi refresh token hết hạn
+    })
 
     // step 5: trả về thông tin user, access token và refresh token cho client để lưu vào local storage
     res.status(StatusCodes.OK).json({
       ...userInfo,
       accessToken,
-      refreshToken,
-    });
+      refreshToken
+    })
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
   }
-};
+}
 
 const logout = async (req, res) => {
   try {
     // Do something
-    res.status(StatusCodes.OK).json({ message: "Logout API success!" });
+    res.status(StatusCodes.OK).json({ message: 'Logout API success!' })
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
   }
-};
+}
 
 const refreshToken = async (req, res) => {
   try {
     // Do something
-    res.status(StatusCodes.OK).json({ message: " Refresh Token API success." });
+    res.status(StatusCodes.OK).json({ message: ' Refresh Token API success.' })
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
   }
-};
+}
 
 export const userController = {
   login,
   logout,
-  refreshToken,
-};
+  refreshToken
+}

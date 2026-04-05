@@ -1,5 +1,5 @@
 // Author: TrungQuanDev: https://youtube.com/@trungquandev
-import JWT from "jsonwebtoken";
+import JWT from 'jsonwebtoken'
 
 // ** Hàm tạo JWT Token **
 // Tham số 1: userInfo: Thông tin user cần mã hóa vào token
@@ -8,13 +8,13 @@ import JWT from "jsonwebtoken";
 const generateToken = async (userInfo, secretSignature, tokenLife) => {
   try {
     return JWT.sign(userInfo, secretSignature, {
-      algorithm: "HS256",
-      expiresIn: tokenLife,
-    });
+      algorithm: 'HS256',
+      expiresIn: tokenLife
+    })
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error)
   }
-};
+}
 
 // ** Hàm giải mã JWT Token **
 // Tham số 1: token: Token cần giải mã
@@ -22,13 +22,13 @@ const generateToken = async (userInfo, secretSignature, tokenLife) => {
 // => Đảm bảo secretSignature giống với secretSignature khi tạo token
 const verifyToken = async (token, secretSignature) => {
   try {
-    return JWT.verify(token, secretSignature);
+    return JWT.verify(token, secretSignature)
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error)
   }
-};
+}
 
 export const JwtProvider = {
   generateToken,
-  verifyToken,
-};
+  verifyToken
+}

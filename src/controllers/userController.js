@@ -99,7 +99,7 @@ const refreshToken = async (req, res) => {
       email: decodedToken.email
     }
 
-    const accessToken = await JwtProvider.generateToken(userInfo, ACCESS_TOKEN_SECRET_SIGNATURE, '5s')
+    const accessToken = await JwtProvider.generateToken(userInfo, ACCESS_TOKEN_SECRET_SIGNATURE, '1h')
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: true,

@@ -99,7 +99,7 @@ const refreshToken = async (req, res) => {
       email: decodedToken.email
     }
 
-    const accessToken = await JwtProvider.generateToken(userInfo, ACCESS_TOKEN_SECRET_SIGNATURE, '1h')
+    const accessToken = await JwtProvider.generateToken(userInfo, ACCESS_TOKEN_SECRET_SIGNATURE, '5s')
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: true,
@@ -107,7 +107,9 @@ const refreshToken = async (req, res) => {
       maxAge: ms('14 days') // bởi vì refresh token có thời gian sống là 14 ngày nên maxAge của cookie cũng phải là 14 ngày. nếu maxAge của cookie nhỏ hơn thời gian sống của refresh token thì cookie sẽ bị xóa trước khi refresh token hết hạn
     })
 
-    res.status(StatusCodes.OK).json({ message: 'Refresh token API success!' })
+    res.status(StatusCodes.OK).json({
+      accessToken
+    })
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Refresh token API failed!' })
   }
